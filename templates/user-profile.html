@@ -1,0 +1,13 @@
+{% extends "layout.html" %}
+  
+{% block y %}
+    
+    <form action="/update" method="post">
+        <h2>Update User-Name, Name and Email</h2>
+        <label>Name: </label><input type="text" name="name" id="update-name" value={{ user.name }}><br>
+        <label>Email: </label><input type="text" name="email" id="update-email" value={{ user.email }}><br>
+        <label>Mobile: </label><input type="text" name="mobile" id="update-mobile" value={{ user.mobile }}><br>
+        <button type="submit" id="signup-button">Update Profile</button>
+    </form>
+
+{% endblock %}

@@ -1,4 +1,4 @@
-from flask import redirect, session, render_template
+from flask import redirect, session, render_template, current_app
 
 from .model import Users
 from sqlalchemy.exc import IntegrityError
@@ -7,76 +7,59 @@ from utilities.constants import *
 from config import db
 
 def add_user(body):
-    user = body['user']
+    mobile = body['mobile']
     pword = body['pword']
     name = body['name']
     email = body['email']
     user_obj = Users(
-            user=user,
+            mobile=mobile,
             pword=pword,
             name=name,
             email=email
         )
-
     try:
-        # data_add(user_obj)
-        return render_template('login.html', msg='You have been successfully signed up')
-    except IntegrityError as i:
-        print(i)
-        return render_template('index.html')
+        db.session.add(user_obj)
+        db.session.commit()
+        return True
     except Exception as e:
-        print("in signup...", e)
-        return render_template('error.html')
-
+        pass
+    return False
+    
 def update_user(body):
     # user = body['user']
     # name = body['name']
     # email = body['email']
-    
 
     try:
-        # data_add(user_obj)
         user_ = db.session.query(Users).get(session['name'].user_id)
-        print(user_.get())
         for key, value in body.items():
             setattr(user_, key, value)
-
         db.session.commit()
         db.session.flush()
-        print(user_.get())
-        print('here')
-        # return {"message":"Password updates successfully"}
-        return render_template('user-profile.html', user=user_)
-    except IntegrityError as i:
-        print(i)
-        return render_template('index.html')
-    except Exception as e:
-        print("in profile update...", e)
-        return render_template('error.html')
-
-def get_dashboard(user_):
-    user_type = user_.user_type
-    if user_type == 1:
-        return redirect('/admin/')
-    elif user_type == 2:
-        return redirect('/user/')    
+        current_app.logger.info('successfully updated user')
+        return user_
     
+    except IntegrityError as i:
+        current_app.logger.error(i)
+    except Exception as e:
+        current_app.logger.error(i)
+        # print("in profile update...", e)
+    return None
+
 def authenticate(form):
     try:
-        user = form['user']
+        email = form['email']
         pword = form['pword']
-        print(user, pword)
-        user_ = Users.query.filter_by(user=user, pword=pword).first()
+        current_app.logger.info('checking email and pass')
+        user_ = Users.query.filter_by(email=email, pword=pword).first()
         if user_:
             session['name'] = user_
-            # user_type = user_.user_type
-            # print('user_type:',user_type)
-            return get_dashboard(user_)
-        return render_template('login.html', msg='Wrong credentials')
+            return True
+        return False
     
     except Exception as e:
         print("in authenticate...\n", e)
-        return 0
+        return False
         
 def forgot_password(form):
     uname = form['user']
@@ -98,3 +81,10 @@ def check_user(user):
     user_ = Users.query.filter_by(user=user).first()
     if user_: return True
     return False
+
+def get_session_user(user):
+    try:
+        return db.session.query(Users).get(user.user_id)
+    except Exception as e:
+
+        return None

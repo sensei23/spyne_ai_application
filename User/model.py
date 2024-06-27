@@ -1,4 +1,4 @@
-from spyne_ai_application.config import db
+from config import db
 
 class Users(db.Model):
     user_id = db.Column(db.Integer, primary_key = True)
