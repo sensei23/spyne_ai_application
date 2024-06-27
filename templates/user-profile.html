@@ -2,11 +2,11 @@
   
 {% block y %}
     
-    <form action="/update" method="post">
+    <form action="user/update" method="POST">
         <h2>Update User-Name, Name and Email</h2>
-        <label>Name: </label><input type="text" name="name" id="update-name" value={{ user.name }}><br>
-        <label>Email: </label><input type="text" name="email" id="update-email" value={{ user.email }}><br>
-        <label>Mobile: </label><input type="text" name="mobile" id="update-mobile" value={{ user.mobile }}><br>
+        <label>Name: </label><input type="text" name="name" id="update-name" value={{ user_.name }}><br>
+        <label>Email: </label><input type="text" name="email" id="update-email" value={{ user_.email }}><br>
+        <label>Mobile: </label><input type="text" name="mobile" id="update-mobile" value={{ user_.mobile }}><br>
         <button type="submit" id="signup-button">Update Profile</button>
     </form>
 
