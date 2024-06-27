@@ -4,6 +4,7 @@ import logging
 from config import db, session_obj
 from User.routes import userBlueprint, authBlueprint
 from DBoard.Post.routes import postBlueprint
+from DBoard.Tag.routes import tagBlueprint
 
 app = Flask(__name__)
 
@@ -31,3 +32,4 @@ with app.app_context():
 app.register_blueprint(userBlueprint)
 app.register_blueprint(authBlueprint)
 app.register_blueprint(postBlueprint)
+app.register_blueprint(tagBlueprint)

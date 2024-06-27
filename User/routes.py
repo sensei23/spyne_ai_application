@@ -122,8 +122,10 @@ class UsersCRUDRoutes:
     def get_all_users():
         try:
             users = UserController.get_all_users()
-            if users:
+            if len(users) > 0:
                 return jsonify(users), HTTP_OK
+            else:
+                return jsonify({"message" : "no user found"}), HTTP_OK
         except Exception as e:
             current_app.logger.error(e)
         return jsonify({"error": "unexpected error"}), HTTP_INTERNAL_SERVER_ERROR
@@ -134,8 +136,10 @@ class UsersCRUDRoutes:
         try:
             form = request.json
             users = UserController.get_users_by_name(form['name'])
-            if users:
+            if len(users) > 0:
                 return jsonify(users), HTTP_OK
+            else:
+                return jsonify({"message" : "no user found"}), HTTP_OK
         except Exception as e:
             current_app.logger.error(e)
         return jsonify({"error": "unexpected error"}), HTTP_INTERNAL_SERVER_ERROR

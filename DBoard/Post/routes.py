@@ -10,7 +10,7 @@ class PostRoutes:
     @postBlueprint.route('/add', methods=POST)
     def addPost():
         try:
-            body = request.form
+            body = request.json
             if PostController.add(body):
                 return jsonify({"message" : "Post added"}), HTTP_OK
         except Exception as e:
@@ -21,7 +21,7 @@ class PostRoutes:
     @postBlueprint.route('/update/', methods=PUT)
     def updatePost():
         try:
-            body = request.form
+            body = request.json
             if 'id' in body and PostController.update(body):
                 return jsonify({"message" : "Post updated"}), HTTP_OK
         except Exception as e:
@@ -29,7 +29,7 @@ class PostRoutes:
         return jsonify({"error" : "unexpected error"}), HTTP_INTERNAL_SERVER_ERROR
 
 
-    @postBlueprint.route('/delete/<id>', methods=POST)
+    @postBlueprint.route('/delete/<id>', methods=DELETE)
     def deletePost(id):
         try:
             id = int(id)
@@ -44,8 +44,10 @@ class PostRoutes:
         try:
             body = request.json
             posts = PostController.searchByText(body['text'])
-            if posts:
+            if len(posts) > 0:
                 return jsonify(posts), HTTP_OK
+            else:
+                return jsonify({"message" : "no post found"}), HTTP_OK
         except Exception as e:
             current_app.logger.error(e)
         return jsonify({"error" : "unexpected error"}), HTTP_INTERNAL_SERVER_ERROR
@@ -55,8 +57,10 @@ class PostRoutes:
         try:
             body = request.json
             posts = PostController.searchByTags(body['tags'])
-            if posts:
+            if len(posts) > 0:
                 return jsonify(posts), HTTP_OK
+            else:
+                return jsonify({"message" : "no post found"}), HTTP_OK
         except Exception as e:
             current_app.logger.error(e)
         return jsonify({"error" : "unexpected error"}), HTTP_INTERNAL_SERVER_ERROR
