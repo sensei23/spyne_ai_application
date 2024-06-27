@@ -1,12 +1,17 @@
+import os
 from flask import Flask
 import logging
 from config import db, session_obj
 from User.routes import userBlueprint, authBlueprint
+from DBoard.Post.routes import postBlueprint
 
 app = Flask(__name__)
 
 app.config['SECRET_KEY'] = '10101010101010'
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///database.db"
+# app.config["UPLOAD_EXTENSIONS"] = [".jpg", ".png"]
+# app.config["UPLOAD_PATH"] = "image_uploads"
+
 logging.basicConfig()
 logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
 
@@ -25,3 +30,4 @@ with app.app_context():
 
 app.register_blueprint(userBlueprint)
 app.register_blueprint(authBlueprint)
+app.register_blueprint(postBlueprint)
